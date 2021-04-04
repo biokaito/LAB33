@@ -9,6 +9,7 @@
 <body>
 <?php 
     require_once "./entities/product.class.php";
+    require_once "./entities/category.class.php";
     if(isset($_POST["btnsubmit"])){
 
         $productName = $_POST["txtName"];
@@ -16,7 +17,7 @@
         $price = $_POST["txtPrice"];
         $quantity = $_POST["txtQuantity"];
         $description = $_POST["txtdesc"];
-        $picture = $_POST["txtpic"];
+        $picture = $_FILES["txtpic"];
 
         $newProduct = new Product($productName, $cateID, $price, $quantity, $description, $picture);
 
@@ -29,7 +30,7 @@
         }
     }
 ?>
-<form method="post" class="form-style-7">
+<form method="post" class="form-style-7" enctype="multipart/form-data" >
 <h1>Add new product</h1>
     <ul>
         <li>
@@ -50,15 +51,19 @@
         <li>
             <label>Type</label>
             <select name="txtCateID" value="<?php echo isset($_POST["txtCateID"]) ? $_POST["txtCateID"] : ""; ?> ">
-                <option value="1">Phone</option>
-                <option value="2">Tablet</option>
-                <option value="3">Laptop</option>
+                <option value="" selected>--Choose one--</option>
+                <?php 
+                    $cates = Category::list_category();
+                    foreach ($cates as $item){
+                        echo "<option value=".$item["CateID"].">".$item["CategoryName"]."</option>";
+                    }
+                ?>
             </select>
             <span>Type</span>
         </li>
         <li>
             <label>Picture</label>
-            <input type="text" name="txtpic" maxlength="100" value="<?php echo isset($_POST["txtpic"]) ? $_POST["txtpic"] : ""; ?> ">
+            <input type="file"  id="txtpic" name="txtpic" accept=".PNG,.GIF,.JPG">
             <span>Picture</span>
         </li>
         <li>
